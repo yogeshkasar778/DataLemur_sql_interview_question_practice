@@ -19,3 +19,32 @@ Solution -
     from data_skill
     where req_skill like '%PostgreSQL,Python,Tableau%'
     order by candidate_id asc;
+
+Q.2 Assume you're given the table below about Facebook Page and Page likes (as in "Like a Facebook Page"). Write a query to return the IDs of the Facebook pages which do not possess any likes. The output should be sorted in ascending order. 
+
+   `Company Name - Facebook`
+   
+Solution - 
+
+    select p.page_id
+    from pages as p
+    left join page_likes as pl on p.page_id = pl.page_id
+    where pl.page_id is not null
+    order by p.page_id asc;
+
+Q.3 Assume you're given the table below about Facebook Page and Page likes (as in "Like a Facebook Page"). Write a query to return the IDs of the Facebook pages which do not possess any likes. The output should be sorted in ascending order. 
+
+   `Company Name - Facebook`
+   
+Solution - 
+
+    select p.page_id
+    from pages as p
+    left join page_likes as pl on p.page_id = pl.page_id
+    where pl.page_id is not null
+    order by p.page_id asc;    
+    
+    
+    
+    
+    
