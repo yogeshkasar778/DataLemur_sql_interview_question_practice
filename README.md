@@ -7,12 +7,15 @@ Q.1 Given a table of candidates and their skills, you're tasked with finding the
 Assumption:
   - There are no duplicates in the candidates table.
    
-   `Company Name - Apple`
+   `Company Name - LinkedIn`
    
 Solution - 
     
-    select distinct count(*) as event_count, event_name
-    from playbook_events
-    where device = 'macbook pro'
-    group by event_name
-    order by event_count;  
+    with data_skill as 
+         (select candidate_id, STRING_AGG(skill,',' order by skill) as req_skill
+          from candidates
+          group by candidate_id)
+    select candidate_id
+    from data_skill
+    where req_skill like '%PostgreSQL,Python,Tableau%'
+    order by candidate_id asc;
