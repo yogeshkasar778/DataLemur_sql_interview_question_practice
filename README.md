@@ -1,1 +1,1 @@
-# DataLemur_sql_interview_question_practice
+# DataLemur SQL Interview Question practice
