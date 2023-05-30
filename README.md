@@ -9,7 +9,7 @@ Assumption:
    
    `Company Name - Apple`
    
- ###  Solution - 
+Solution - 
     
     select distinct count(*) as event_count, event_name
     from playbook_events
