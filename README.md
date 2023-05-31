@@ -102,9 +102,54 @@ Solution -
     group by extract(month from submit_date), product_id
     order by mth, product asc ;   
     
+ Q.7 Your team at JPMorgan Chase is soon launching a new credit card, and to gain some context, you are analyzing how many credit cards were issued each month.
+ 
+ Write a query that outputs the name of each credit card and the difference in issued amount between the month with the most cards issued, and the least cards issued. Order the results according to the biggest difference.
+
+   `Company Name - JPMorgan Chase`
+   
+Solution - 
+
+    select card_name, max(issued_amount) - min(issued_amount) as difference
+    from monthly_cards_issued  
+    group by card_name
+    order by difference desc;  
     
+ Q.8 Assume you're given the table on user viewership categorised by device type where the three types are laptop, tablet, and phone. 
+ 
+Write a query that calculates the total viewership for laptops and mobile devices where mobile is defined as the sum of tablet and phone viewership. Output the total viewership for laptops as laptop_reviews and the total viewership for mobile devices as mobile_views.
+
+   `Company Name - New York Times`
+   
+Solution - 
+
+    with view as 
+    (select 
+         case when device_type = 'laptop' then 1
+         else 0
+         end as laptop,
+         case when device_type = 'tablet','phone' then 1
+         else 0
+         end as mobile
+    from viewership)
     
+    select sum(laptop) as laptop_view, sum(mobile) as mobile_view
+    from view;      
     
-    
+Q.9 Assume you're given the tables containing completed trade orders and user details in a Robinhood trading system.
+ 
+Write a query to retrieve the top three cities that have the highest number of completed trade orders listed in descending order. Output the city name and the corresponding number of completed trade orders.
+
+   `Company Name - Robinhood`
+   
+Solution - 
+
+    select u.city, count(*) as total_orders
+    from trades t
+    left join users u on t.user_id = u.user_id
+    where t.status = 'Completed'
+    group by u.city
+    order by total_orders
+    limit 3;    
     
     
