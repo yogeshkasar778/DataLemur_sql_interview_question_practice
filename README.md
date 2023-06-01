@@ -152,4 +152,44 @@ Solution -
     order by total_orders
     limit 3;    
     
+Q.10 Assume you have an events table on Facebook app analytics. Write a query to calculate the click-through rate (CTR) for the app in 2022 and round the results to 2 decimal places.
+
+Definition and note:
+
+  - Percentage of click-through rate (CTR) = 100.0 * Number of clicks / Number of impressions
+  - To avoid integer division, multiply the CTR by 100.0, not 100.
+
+   `Company Name - Facebook`
+   
+Solution - 
+
+    with evn_ctr as 
+    (select app_id,
+           sum(case when event_type = 'impression' then 1
+           else 0
+           end) as number_impression,
+           sum(case when event_type = 'click' then 1
+           else 0
+           end) as number_click
+    from events  
+    where extract(year from timestamp) = '2022'
+    group by app_id)
+    
+    select app_id, round(100.0 * number_click/number_impression,2) as ctr
+    from evn_ctr;    
+    
+  Q.11 You're trying to find the mean number of items per order on Alibaba, rounded to 1 decimal place using tables which includes information on the count of items in each order (item_count table) and the corresponding number of orders for each item count (order_occurrences table).
+
+   `Company Name - Alibaba`
+   
+Solution - 
+
+    with orders as 
+    (select sum(item_count * order_occurrences) as total_items,
+            sum(order_occurrences) as total_orders
+    from items_per_orders)
+    
+    select round(1.0 * total_items / total_orders,1) as mean
+    from orders;       
+    
     
