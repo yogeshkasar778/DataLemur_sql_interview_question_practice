@@ -225,3 +225,51 @@ Solution -
     where cogs > total_sales
     group by manufacturer
     order by total_loss desc;     
+
+Q.14 CVS Health is trying to better understand its pharmacy sales, and how well different products are selling.
+
+Write a query to find the total drug sales for each manufacturer. Round your answer to the closest million, and report your results in descending order of total sales.
+
+Because this data is being directly fed into a dashboard which is being seen by business stakeholders, format your result like this: "$36 million".
+
+   `Company Name - CSV Health`
+   
+Solution - 
+
+    select manufacturer,concat('$', round(sum(total_sales)/pow(10,6)), ' million') as sale
+    from pharmacy_sales 
+    group by manufacturer
+    order by sum(total_sales) desc;   
+    
+Q.15 Given a table of Facebook posts, for each user who posted at least twice in 2021, write a query to find the number of days between each user’s first post of the year and last post of the year in the year 2021. Output the user and number of the days between each user's first and last post.
+
+   `Company Name - Facebook`
+   
+Solution - 
+
+    select user_id, max(cast(post_date as date)) - min(cast(post_date as date)) as sale
+    from posts  
+    where extract(year from post_date) = 2021
+    group by user_id
+    having count(post_id) >= 2 ;       
+    
+Q.16 Assume you're given a table Twitter tweet data, write a query to obtain a histogram of tweets posted per user in 2022. Output the tweet count per user as the bucket and the number of Twitter users who fall into that bucket.
+
+In other words, group the users by the number of tweets they posted in 2022 and count the number of users in each group.
+
+   `Company Name - Facebook`
+   
+Solution - 
+
+    with tweet as 
+    (select user_id, count(tweet_id) as number
+    from tweets  
+    where extract(year from tweet_date) = 2022
+    group by user_id)
+    
+    select number as tweet_bucket, count(user_id) as user_num
+    from tweet
+    group by number;     
+    
+    
+    
