@@ -192,4 +192,36 @@ Solution -
     select round(1.0 * total_items / total_orders,1) as mean
     from orders;       
     
-    
+Q.12 CVS Health is trying to better understand its pharmacy sales, and how well different products are selling. Each drug can only be produced by one manufacturer.
+
+Write a query to find the top 3 most profitable drugs sold, and how much profit they made. Assume that there are no ties in the profits. Display the result from the highest to the lowest total profit.
+
+Definition:
+
+  - cogs stands for Cost of Goods Sold which is the direct cost associated with producing the drug.
+  - Total Profit = Total Sales - Cost of Goods Sold
+
+   `Company Name - CSV Health`
+   
+Solution - 
+
+    select drug, (total_sales - cogs) as total_profit
+    from pharmacy_sales 
+    order by total_profit desc
+    limit 3;          
+
+Q.13 CVS Health is analyzing its pharmacy sales data, and how well different products are selling in the market. Each drug is exclusively manufactured by a single manufacturer.
+
+Write a query to identify the manufacturers associated with the drugs that resulted in losses for CVS Health and calculate the total amount of losses incurred.
+
+Output the manufacturer's name, the number of drugs associated with losses, and the total losses in absolute value. Display the results sorted in descending order with the highest losses displayed at the top.
+
+   `Company Name - CSV Health`
+   
+Solution - 
+
+    select manufacturer, count(distinct product_id) as drug_count, sum(cogs - total_sales) as total_loss
+    from pharmacy_sales 
+    where cogs > total_sales
+    group by manufacturer
+    order by total_loss desc;     
