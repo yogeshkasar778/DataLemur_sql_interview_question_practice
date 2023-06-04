@@ -257,7 +257,7 @@ Q.16 Assume you're given a table Twitter tweet data, write a query to obtain a h
 
 In other words, group the users by the number of tweets they posted in 2022 and count the number of users in each group.
 
-   `Company Name - Facebook`
+   `Company Name - Tweeter`
    
 Solution - 
 
@@ -271,5 +271,20 @@ Solution -
     from tweet
     group by number;     
     
+Q.17 UnitedHealth has a program called Advocate4Me, which allows members to call an advocate and receive support for their health care needs – whether that's behavioural, clinical, well-being, health care financing, benefits, claims or pharmacy help.
+
+Write a query to find how many UHG members made 3 or more calls. case_id column uniquely identifies each call made.
+
+   `Company Name - UnitedHealth`
+   
+Solution - 
+
+    with cte as 
+    (select policy_holder_id
+    from callers   
+    group by policy_holder_id
+    having count(case_id) >= 3)
     
+    select count(policy_holder_id) as user_num
+    from cte;      
     
