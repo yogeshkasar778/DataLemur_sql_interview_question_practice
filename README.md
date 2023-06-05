@@ -297,7 +297,8 @@ Write a query to find the percentage of calls that cannot be categorised. Round 
    
 Solution - 
 
-    select round(1.0*sum(case when call_category is null or call_category = 'n/a' then 1 else 0 end)/count(*)*100,1) as call_percentage
+    select round(1.0*sum(
+           case when call_category is null or call_category = 'n/a' then 1 else 0 end)/count(*)*100,1) as call_percentage
     from callers;    
 
  Q.19 Assume there are three Spotify tables containing information about the artists, songs, and music charts. Write a query to find the top 5 artists whose songs appear most frequently in the Top 10 of the global_song_rank table.
