@@ -299,3 +299,46 @@ Solution -
 
     select round(1.0*sum(case when call_category is null or call_category = 'n/a' then 1 else 0 end)/count(*)*100,1) as call_percentage
     from callers;    
+
+ Q.19 Assume there are three Spotify tables containing information about the artists, songs, and music charts. Write a query to find the top 5 artists whose songs appear most frequently in the Top 10 of the global_song_rank table.
+
+Display the top 5 artist names in ascending order, along with their song appearance ranking. Note that if two artists have the same number of song appearances, they should have the same ranking, and the rank numbers should be continuous (i.e. 1, 2, 2, 3, 4, 5).
+
+For instance, if Ed Sheeran appears in the Top 10 five times and Bad Bunning four times, Ed Sheeran should be ranked 1st, and Bad Bunny should be ranked 2nd.
+   `Company Name - Spotify`
+   
+Solution - 
+
+    with cte1 as 
+    (select a.artist_name, count(*) as num_of_times
+    from global_song_rank rnk
+    left join songs s on s.song_id = rnk.song_id
+    left join artists a on a.artist_id = s.artist_id
+    where rnk.rank <=10
+    group by a.artist_name),
+    
+    cte2 as 
+    (select *, dense_rank() over(order by num_of_times desc) as artist_rank
+    from cte1)
+    
+    select artist_name, artist_rank
+    from cte2
+    where artist_rank <=5
+    order by artist_rank,artist_name;    
+
+ Q.20 Assume you are given the table below on Uber transactions made by users. Write a query to obtain the third transaction of every user. Output the user id, spend and transaction date.
+   `Company Name - Uber`
+   
+Solution - 
+
+    with cte as 
+    (select *, row_number() over(partition by user_id order by transactions_date) as tran_num
+    from transactions )
+    
+    select user_id, speed, transactions_date 
+    from cte
+    where tran_num = 3;
+    
+    
+    
+    
