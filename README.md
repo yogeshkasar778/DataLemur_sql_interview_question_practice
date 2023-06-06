@@ -341,6 +341,45 @@ Solution -
     from cte
     where tran_num = 3;
     
+ Q.21 Assume you're given tables with information on Snapchat users, including their ages and time spent sending and opening snaps.
+
+Write a query to obtain a breakdown of the time spent sending vs. opening snaps as a percentage of total time spent on these activities grouped by age group. Round the percentage to 2 decimal places in the output.
+
+Notes:
+  - Calculate the following percentages:
+        - time spent sending / (Time spent sending + Time spent opening)
+        - Time spent opening / (Time spent sending + Time spent opening)
+  - To avoid integer division in percentages, multiply by 100.0 and not 100.
+
+   `Company Name - SnapChat`
+   
+Solution - 
+
+    with snap as 
+    (select ab.age_bucket,
+            sum(case when activity_type = 'open' then time_spen else 0 end) as t_open,
+            sum(case when activity_type = 'send' then time_spen else 0 end) as t_send
+    from activities act
+    left join age_breakdown ab on act.user_id = ab.user_id
+    group by ab.age_bucket)
     
+    select age_bucket, 
+           round(t_sned/(t_send + t_open)*100.0,2) as send_perc,
+           round(t_open/(t_open + t_send)*100.0,2) as open_perc
+    from snap;    
     
-    
+ Q.22 Given a table of tweet data over a specified time period, calculate the 3-day rolling average of tweets for each user. Output the user ID, tweet date, and rolling averages rounded to 2 decimal places.
+
+Notes:
+
+  - A rolling average, also known as a moving average or running mean is a time-series technique that examines trends in data over a specified period of time.
+  - In this case, we want to determine how the tweet count for each user changes over a 3-day period.
+   `Company Name - Tweeter`
+   
+Solution - 
+
+    select user_id, 
+           tweet_date,
+           round(avg(tweet_count) over (partition by user_id order by tweet_date perceding and current row),2)
+           as rolling_avg_3d
+    from tweets;        
