@@ -383,3 +383,51 @@ Solution -
            round(avg(tweet_count) over (partition by user_id order by tweet_date perceding and current row),2)
            as rolling_avg_3d
     from tweets;        
+
+ Q.23 Assume you're given a table with measurement values obtained from a Google sensor over multiple days with measurements taken multiple times within each day.
+
+Write a query to calculate the sum of odd-numbered and even-numbered measurements separately for a particular day and display the results in two different columns. Refer to the Example Output below for the desired format.
+
+Definition:
+
+      - Within a day, measurements taken at 1st, 3rd, and 5th times are considered odd-numbered measurements, and measurements taken at 2nd, 4th, and 6th times are considered even-numbered measurements.
+   `Company Name - Google`
+   
+Solution - 
+
+    with odd_even as 
+    (select *,
+           rank() over (partition by cast(measurements_time as DATE) order by measurements_time) as number
+    from measurements)
+    
+    select cast(measurements_time as DATE) as measurement_day,
+    sum(case when number % 2 <> 0 then measurement_value else 0 end) as odd_num,
+    sum(case when number % 2 = 0 then measurement_vale else 0 end) as even_num
+    from odd_even
+    group by cast(measurements_time as DATE)
+    order by measurement_day;
+
+ Q.24 New TikTok users sign up with their emails. They confirmed their signup by replying to the text confirmation to activate their accounts. Users may receive multiple text messages for account confirmation until they have confirmed their new account.
+
+A senior analyst is interested to know the activation rate of specified users in the emails table. Write a query to find the activation rate. Round the percentage to 2 decimal places.
+
+Definitions:
+
+     - emails table contain the information of user signup details.
+     - texts table contains the users' activation information.
+     
+Assumptions:
+
+   - The analyst is interested in the activation rate of specific users in the emails table, which may not include all users that could potentially be found in the texts table.
+   - For example, user 123 in the emails table may not be in the texts table and vice versa.
+   `Company Name - TikTok`
+   
+Solution - 
+
+    select round(1.0*sum(case when t.signup_action = 'Confrimed' then 1 else 0 end)/count(distinct e.user_id),2) as comfirm_rate
+    from emails e
+    left join texts t on e.email_id = t.email_id; 
+
+
+
+
