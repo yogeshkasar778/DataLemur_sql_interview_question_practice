@@ -428,6 +428,55 @@ Solution -
     from emails e
     left join texts t on e.email_id = t.email_id; 
 
+Q.25 Assume you're given a table with information on Amazon customers and their spending on products in different categories, write a query to identify the top two highest-grossing products within each category in the year 2022. The output should include the category, product, and total spend.
+   `Company Name - Amazon`
+   
+Solution - 
 
+    with cte1 as
+    (select category, product, sum(spend) as total_spend
+    from product_spend 
+    where extract(year from transaction_date) = 2022
+    group by category, product),
+    
+    cte2 as
+    (select*, row_number() over(partition by category order by total_spend desc) as rnk
+    from cte1)
+    
+    select category, product, total_spend
+    from cte2
+    where rnk <=2; 
 
+Q.26 Your team at JPMorgan Chase is soon launching a new credit card. You are asked to estimate how many cards you'll issue in the first month.
 
+Before you can answer this question, you want to first get some perspective on how well new credit card launches typically do in their first month.
+
+Write a query that outputs the name of the credit card, and how many cards were issued in its launch month. The launch month is the earliest record in the monthly_cards_issued table for a given card. Order the results starting from the biggest issued amount.
+   `Company Name - JPMorgan`
+   
+Solution - 
+
+    with cte1 as
+    (select *, rank() over(partition by card_name order by issue_year, issue_month) as rnk
+    from monthly_cards_issued )
+
+    select card_name, issued_amount
+    from cte1
+    where rnk =1
+    order by issued_amount desc; 
+
+Q.27 A Microsoft Azure Supercloud customer is a company which buys at least 1 product from each product category.
+Write a query to report the company ID which is a Supercloud customer.
+   `Company Name - Microsoft`
+   
+Solution - 
+
+    with cte1 as
+    (select c.*, p.product_category
+    from customer_contracts c
+    left join products p on c.product_id = p.product_id)
+
+    select customer_id
+    from cte1
+    group by customer_id
+    having count(distinct product_category) = (select count(distinct product_category) from products); 
