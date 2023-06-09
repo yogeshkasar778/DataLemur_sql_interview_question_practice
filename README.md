@@ -480,3 +480,45 @@ Solution -
     from cte1
     group by customer_id
     having count(distinct product_category) = (select count(distinct product_category) from products); 
+
+Q.28 A phone call is considered an international call when the person calling is in a different country than the person receiving the call.
+
+What percentage of phone calls are international? Round the result to 1 decimal.
+
+Assumption:
+
+  - The caller_id in phone_info table refers to both the caller and receiver.
+  
+   `Company Name - Verizon`
+   
+Solution - 
+
+    with cte1 as
+    (select pc.*, p1.country_id as call_country,
+    p2.country_id as rec_country
+    from phone_calls  pc
+    left join phone_info  p1 on pc.caller_id = p1.caller_id
+    left join phone_info  p2, on pc.receiver_id = p2.caller_id)
+
+    select round(1.0*sum(case when call_country <> rec_country then 1 else 0 end)/count(*)*100,1)
+    from cte1;
+    
+Q.29 Assume you are given the table on Walmart user transactions. Based on a user's most recent transaction date, write a query to obtain the users and the number of products bought.
+
+Output the user's most recent transaction date, user ID and the number of products sorted by the transaction date in chronological order.
+  
+   `Company Name - Walmaart`
+   
+Solution - 
+
+    with cte1 as
+    (select pc.*, rank() over(partition by user_id 
+    order by transaction_date desc) as rnk
+    from phone_calls)
+
+    select transaction_date, user_id, count(distinct product_id) as purchase_count
+    from cte1
+    where rnk = 1 
+    group by transaction_date, user_id
+    order by transaction_date;    
+    
