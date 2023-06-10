@@ -521,4 +521,18 @@ Solution -
     where rnk = 1 
     group by transaction_date, user_id
     order by transaction_date;    
-    
+
+Q.30Given a table containing the item count for each order and the frequency of orders with that item count, write a query to determine the mode of the number of items purchased per order on Alibaba. If there are several item counts with the same frequency, you should sort them in ascending order.
+
+   `Company Name - Alibaba`
+   
+Solution - 
+
+    with cte1 as
+    (select pc.*, rank() over(order by order_occurrences desc) as rnk
+    from items_per_order )
+
+    select items_count as mode
+    from cte1
+    where rnk = 1 
+    order by mode;    
