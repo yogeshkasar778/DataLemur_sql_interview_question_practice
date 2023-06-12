@@ -522,7 +522,7 @@ Solution -
     group by transaction_date, user_id
     order by transaction_date;    
 
-Q.30Given a table containing the item count for each order and the frequency of orders with that item count, write a query to determine the mode of the number of items purchased per order on Alibaba. If there are several item counts with the same frequency, you should sort them in ascending order.
+Q.30 Given a table containing the item count for each order and the frequency of orders with that item count, write a query to determine the mode of the number of items purchased per order on Alibaba. If there are several item counts with the same frequency, you should sort them in ascending order.
 
    `Company Name - Alibaba`
    
@@ -536,3 +536,35 @@ Solution -
     from cte1
     where rnk = 1 
     order by mode;    
+    
+## `Difficulty Level - Hard`
+
+Q.31 Assume you're given a table containing information on Facebook user actions. Write a query to obtain number of monthly active users (MAUs) in July 2022, including the month in numerical format "1, 2, 3".
+
+Hint:
+
+   - An active user is defined as a user who has performed actions such as 'sign-in', 'like', or 'comment' in both the current month and the previous month.
+
+   `Company Name - Facebook`
+   
+Solution - 
+
+    with cte1 as
+    (select distinct user_id
+    from items_per_order 
+    where extract(month from event_date) = 7
+    and extract(year from event_date) = 2022
+    intersect
+    select distinct user_id
+    from items_per_order 
+    where extract(month from event_date) = 6
+    and extract(year from event_date) = 2022)
+
+    select '7' as month, count(user_id) as monthly_count
+    from cte1;   
+
+
+
+
+
+
